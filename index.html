@@ -74,27 +74,16 @@ canvas{
 
 /* ===== CANVAS ===== */
 
-const canvas =
-    document.getElementById("canvas");
-
-const ctx =
-    canvas.getContext("2d");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
 function resize(){
-
-    canvas.width =
-        window.innerWidth;
-
-    canvas.height =
-        window.innerHeight;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 }
 
 resize();
-
-window.addEventListener(
-    "resize",
-    resize
-);
+window.addEventListener("resize", resize);
 
 /* ===== KOLOR ===== */
 
@@ -103,35 +92,21 @@ const colorPicker =
         "colorPicker"
     );
 
-let ballColor =
-    localStorage.getItem(
-        "ballColor"
-    ) || "#ff8c00";
+let ballColor = "#ff8c00";
 
-colorPicker.value =
-    ballColor;
+colorPicker.value = ballColor;
 
 colorPicker.addEventListener(
     "input",
     e=>{
-
-        ballColor =
-            e.target.value;
-
-        localStorage.setItem(
-            "ballColor",
-            ballColor
-        );
+        ballColor = e.target.value;
     }
 );
 
 /* ===== PIŁKA ===== */
 
-let x =
-    canvas.width / 2;
-
-let y =
-    canvas.height / 2;
+let x = canvas.width / 2;
+let y = canvas.height / 2;
 
 let vx = 0;
 let vy = 0;
@@ -161,30 +136,18 @@ canvas.addEventListener(
     "mousedown",
     e=>{
 
-        const dx =
-            e.clientX - x;
+        const dx = e.clientX - x;
+        const dy = e.clientY - y;
 
-        const dy =
-            e.clientY - y;
-
-        if(
-            dx*dx + dy*dy
-            <= r*r
-        ){
+        if(dx * dx + dy * dy <= r * r){
 
             dragging = true;
 
-            offsetX =
-                x - e.clientX;
+            offsetX = x - e.clientX;
+            offsetY = y - e.clientY;
 
-            offsetY =
-                y - e.clientY;
-
-            lastMX =
-                e.clientX;
-
-            lastMY =
-                e.clientY;
+            lastMX = e.clientX;
+            lastMY = e.clientY;
         }
     }
 );
@@ -207,30 +170,16 @@ window.addEventListener(
     "mousemove",
     e=>{
 
-        if(!dragging)
-            return;
+        if(!dragging) return;
 
-        x =
-            e.clientX
-            + offsetX;
+        x = e.clientX + offsetX;
+        y = e.clientY + offsetY;
 
-        y =
-            e.clientY
-            + offsetY;
+        mouseVX = e.clientX - lastMX;
+        mouseVY = e.clientY - lastMY;
 
-        mouseVX =
-            e.clientX
-            - lastMX;
-
-        mouseVY =
-            e.clientY
-            - lastMY;
-
-        lastMX =
-            e.clientX;
-
-        lastMY =
-            e.clientY;
+        lastMX = e.clientX;
+        lastMY = e.clientY;
     }
 );
 
@@ -240,33 +189,20 @@ canvas.addEventListener(
     "touchstart",
     e=>{
 
-        const t =
-            e.touches[0];
+        const t = e.touches[0];
 
-        const dx =
-            t.clientX - x;
+        const dx = t.clientX - x;
+        const dy = t.clientY - y;
 
-        const dy =
-            t.clientY - y;
-
-        if(
-            dx*dx + dy*dy
-            <= r*r
-        ){
+        if(dx * dx + dy * dy <= r * r){
 
             dragging = true;
 
-            offsetX =
-                x - t.clientX;
+            offsetX = x - t.clientX;
+            offsetY = y - t.clientY;
 
-            offsetY =
-                y - t.clientY;
-
-            lastMX =
-                t.clientX;
-
-            lastMY =
-                t.clientY;
+            lastMX = t.clientX;
+            lastMY = t.clientY;
         }
     }
 );
@@ -289,33 +225,18 @@ window.addEventListener(
     "touchmove",
     e=>{
 
-        if(!dragging)
-            return;
+        if(!dragging) return;
 
-        const t =
-            e.touches[0];
+        const t = e.touches[0];
 
-        x =
-            t.clientX
-            + offsetX;
+        x = t.clientX + offsetX;
+        y = t.clientY + offsetY;
 
-        y =
-            t.clientY
-            + offsetY;
+        mouseVX = t.clientX - lastMX;
+        mouseVY = t.clientY - lastMY;
 
-        mouseVX =
-            t.clientX
-            - lastMX;
-
-        mouseVY =
-            t.clientY
-            - lastMY;
-
-        lastMX =
-            t.clientX;
-
-        lastMY =
-            t.clientY;
+        lastMX = t.clientX;
+        lastMY = t.clientY;
     }
 );
 
@@ -333,33 +254,23 @@ function update(){
         vx *= friction;
         vy *= friction;
 
-        if(x-r < 0){
-
+        if(x - r < 0){
             x = r;
-
             vx *= -bounce;
         }
 
-        if(x+r > canvas.width){
-
-            x =
-                canvas.width-r;
-
+        if(x + r > canvas.width){
+            x = canvas.width - r;
             vx *= -bounce;
         }
 
-        if(y-r < 0){
-
+        if(y - r < 0){
             y = r;
-
             vy *= -bounce;
         }
 
-        if(y+r > canvas.height){
-
-            y =
-                canvas.height-r;
-
+        if(y + r > canvas.height){
+            y = canvas.height - r;
             vy *= -bounce;
         }
     }
@@ -386,9 +297,7 @@ function draw(){
         Math.PI * 2
     );
 
-    ctx.fillStyle =
-        ballColor;
-
+    ctx.fillStyle = ballColor;
     ctx.fill();
 
     ctx.closePath();
@@ -399,12 +308,9 @@ function draw(){
 function loop(){
 
     update();
-
     draw();
 
-    requestAnimationFrame(
-        loop
-    );
+    requestAnimationFrame(loop);
 }
 
 loop();
