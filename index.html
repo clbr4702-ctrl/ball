@@ -6,40 +6,132 @@
 <title>Piłka z grawitacją</title>
 
 <style>
-html,body{
+
+html, body{
     margin:0;
     width:100%;
     height:100%;
     overflow:hidden;
     background:white;
+    font-family:Segoe UI,sans-serif;
 }
 
 canvas{
     display:block;
 }
+
+/* ===== COLOR PICKER ===== */
+
+.color-box{
+    position:fixed;
+    top:10px;
+    right:10px;
+
+    width:90px;
+    height:70px;
+
+    background:white;
+
+    border:3px solid #888;
+    border-radius:10px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    text-align:center;
+
+    cursor:pointer;
+
+    color:black;
+    font-size:12px;
+
+    z-index:1000;
+
+    user-select:none;
+}
+
+.color-box:hover{
+    background:#f5f5f5;
+}
+
 </style>
 </head>
 <body>
+
+<label class="color-box">
+    Choose<br>Color
+    <input
+        type="color"
+        id="colorPicker"
+        hidden
+    >
+</label>
 
 <canvas id="canvas"></canvas>
 
 <script>
 
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+/* ===== CANVAS ===== */
+
+const canvas =
+    document.getElementById("canvas");
+
+const ctx =
+    canvas.getContext("2d");
 
 function resize(){
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+
+    canvas.width =
+        window.innerWidth;
+
+    canvas.height =
+        window.innerHeight;
 }
 
 resize();
-window.addEventListener("resize", resize);
+
+window.addEventListener(
+    "resize",
+    resize
+);
+
+/* ===== KOLOR ===== */
+
+const colorPicker =
+    document.getElementById(
+        "colorPicker"
+    );
+
+let ballColor =
+    localStorage.getItem(
+        "ballColor"
+    ) || "#ff8c00";
+
+colorPicker.value =
+    ballColor;
+
+colorPicker.addEventListener(
+    "input",
+    e=>{
+
+        ballColor =
+            e.target.value;
+
+        localStorage.setItem(
+            "ballColor",
+            ballColor
+        );
+    }
+);
 
 /* ===== PIŁKA ===== */
 
-let x = canvas.width/2;
-let y = canvas.height/2;
+let x =
+    canvas.width / 2;
+
+let y =
+    canvas.height / 2;
 
 let vx = 0;
 let vy = 0;
@@ -49,6 +141,8 @@ const r = 40;
 const gravity = 0.7;
 const friction = 0.99;
 const bounce = 0.8;
+
+/* ===== PRZECIĄGANIE ===== */
 
 let dragging = false;
 
@@ -63,95 +157,167 @@ let mouseVY = 0;
 
 /* ===== MYSZ ===== */
 
-canvas.addEventListener("mousedown", e=>{
+canvas.addEventListener(
+    "mousedown",
+    e=>{
 
-    const dx = e.clientX - x;
-    const dy = e.clientY - y;
+        const dx =
+            e.clientX - x;
 
-    if(dx*dx + dy*dy <= r*r){
+        const dy =
+            e.clientY - y;
 
-        dragging = true;
+        if(
+            dx*dx + dy*dy
+            <= r*r
+        ){
 
-        offsetX = x - e.clientX;
-        offsetY = y - e.clientY;
+            dragging = true;
 
-        lastMX = e.clientX;
-        lastMY = e.clientY;
+            offsetX =
+                x - e.clientX;
+
+            offsetY =
+                y - e.clientY;
+
+            lastMX =
+                e.clientX;
+
+            lastMY =
+                e.clientY;
+        }
     }
-});
+);
 
-window.addEventListener("mouseup", ()=>{
+window.addEventListener(
+    "mouseup",
+    ()=>{
 
-    if(dragging){
+        if(dragging){
 
-        dragging = false;
+            dragging = false;
 
-        vx = mouseVX;
-        vy = mouseVY;
+            vx = mouseVX;
+            vy = mouseVY;
+        }
     }
-});
+);
 
-window.addEventListener("mousemove", e=>{
+window.addEventListener(
+    "mousemove",
+    e=>{
 
-    if(!dragging) return;
+        if(!dragging)
+            return;
 
-    x = e.clientX + offsetX;
-    y = e.clientY + offsetY;
+        x =
+            e.clientX
+            + offsetX;
 
-    mouseVX = e.clientX - lastMX;
-    mouseVY = e.clientY - lastMY;
+        y =
+            e.clientY
+            + offsetY;
 
-    lastMX = e.clientX;
-    lastMY = e.clientY;
-});
+        mouseVX =
+            e.clientX
+            - lastMX;
+
+        mouseVY =
+            e.clientY
+            - lastMY;
+
+        lastMX =
+            e.clientX;
+
+        lastMY =
+            e.clientY;
+    }
+);
 
 /* ===== DOTYK ===== */
 
-canvas.addEventListener("touchstart", e=>{
+canvas.addEventListener(
+    "touchstart",
+    e=>{
 
-    const t = e.touches[0];
+        const t =
+            e.touches[0];
 
-    const dx = t.clientX - x;
-    const dy = t.clientY - y;
+        const dx =
+            t.clientX - x;
 
-    if(dx*dx + dy*dy <= r*r){
+        const dy =
+            t.clientY - y;
 
-        dragging = true;
+        if(
+            dx*dx + dy*dy
+            <= r*r
+        ){
 
-        offsetX = x - t.clientX;
-        offsetY = y - t.clientY;
+            dragging = true;
 
-        lastMX = t.clientX;
-        lastMY = t.clientY;
+            offsetX =
+                x - t.clientX;
+
+            offsetY =
+                y - t.clientY;
+
+            lastMX =
+                t.clientX;
+
+            lastMY =
+                t.clientY;
+        }
     }
-});
+);
 
-window.addEventListener("touchend", ()=>{
+window.addEventListener(
+    "touchend",
+    ()=>{
 
-    if(dragging){
+        if(dragging){
 
-        dragging = false;
+            dragging = false;
 
-        vx = mouseVX;
-        vy = mouseVY;
+            vx = mouseVX;
+            vy = mouseVY;
+        }
     }
-});
+);
 
-window.addEventListener("touchmove", e=>{
+window.addEventListener(
+    "touchmove",
+    e=>{
 
-    if(!dragging) return;
+        if(!dragging)
+            return;
 
-    const t = e.touches[0];
+        const t =
+            e.touches[0];
 
-    x = t.clientX + offsetX;
-    y = t.clientY + offsetY;
+        x =
+            t.clientX
+            + offsetX;
 
-    mouseVX = t.clientX - lastMX;
-    mouseVY = t.clientY - lastMY;
+        y =
+            t.clientY
+            + offsetY;
 
-    lastMX = t.clientX;
-    lastMY = t.clientY;
-});
+        mouseVX =
+            t.clientX
+            - lastMX;
+
+        mouseVY =
+            t.clientY
+            - lastMY;
+
+        lastMX =
+            t.clientX;
+
+        lastMY =
+            t.clientY;
+    }
+);
 
 /* ===== FIZYKA ===== */
 
@@ -168,40 +334,64 @@ function update(){
         vy *= friction;
 
         if(x-r < 0){
+
             x = r;
+
             vx *= -bounce;
         }
 
         if(x+r > canvas.width){
-            x = canvas.width-r;
+
+            x =
+                canvas.width-r;
+
             vx *= -bounce;
         }
 
         if(y-r < 0){
+
             y = r;
+
             vy *= -bounce;
         }
 
         if(y+r > canvas.height){
-            y = canvas.height-r;
+
+            y =
+                canvas.height-r;
+
             vy *= -bounce;
         }
     }
 }
 
+/* ===== RYSOWANIE ===== */
+
 function draw(){
 
     ctx.clearRect(
-        0,0,
+        0,
+        0,
         canvas.width,
         canvas.height
     );
 
     ctx.beginPath();
-    ctx.arc(x,y,r,0,Math.PI*2);
 
-    ctx.fillStyle = "orange";
+    ctx.arc(
+        x,
+        y,
+        r,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle =
+        ballColor;
+
     ctx.fill();
+
+    ctx.closePath();
 }
 
 /* ===== PĘTLA ===== */
@@ -209,9 +399,12 @@ function draw(){
 function loop(){
 
     update();
+
     draw();
 
-    requestAnimationFrame(loop);
+    requestAnimationFrame(
+        loop
+    );
 }
 
 loop();
